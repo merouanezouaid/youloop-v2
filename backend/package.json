@@ -1,0 +1,23 @@
+{
+  "name": "down-youloop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "nodemon index.js",
+    "test": "nodemon index.js"
+  },
+  "author": "Kaito",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.17.3",
+    "ffmpeg-static": "^5.2.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.6.1",
+    "youtube-dl-exec": "^2.5.3"
+  }
+}
