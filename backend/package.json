@@ -10,6 +10,7 @@
   "author": "Kaito",
   "license": "ISC",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "axios": "^1.6.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
