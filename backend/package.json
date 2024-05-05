@@ -19,6 +19,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "nodemon": "^2.0.15",
     "prettier": "^2.6.1",
-    "youtube-dl-exec": "^2.5.3"
+    "youtube-dl-exec": "^2.5.3",
+    "ytdl-core": "^4.11.5"
   }
 }

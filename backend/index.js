@@ -1,15 +1,13 @@
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
-const fs = require("fs");
+
+const ytdl = require("ytdl-core");
 
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 require("dotenv").config();
-
-const youtubedl = require("youtube-dl-exec");
 
 const app = express();
 
@@ -35,7 +33,7 @@ const getVideoID = (videoUrl) => {
 	return name ? name : videoUrl.split("be/")[1];
 };
 
-app.post("/download", (req, res) => {
+app.post("/download", async (req, res) => {
 	const { videoUrl, startTime, endTime } = req.body;
 
 	const startTimeInSeconds = transformTimeToSeconds(startTime);
@@ -45,31 +43,27 @@ app.post("/download", (req, res) => {
 	const videoID = getVideoID(videoUrl);
 	const videoName = "./downloads/" + videoID + "-" + Date.now() + ".mp4";
 
-	youtubedl(videoUrl, {
-		output: videoName,
-	}).then((output) => {
-		const outputPath = "./output/" + videoID + "-" + Date.now() + ".mp4";
+	// Get the video info
+	const info = await ytdl.getInfo(videoUrl);
 
-		// Create the output directory if it doesn't exist
-		if (!fs.existsSync("./output")) {
-			fs.mkdirSync("./output");
-		}
+	console.log(info.formats);
 
-		ffmpeg({ source: videoName })
-			.setStartTime(startTimeInSeconds)
-			.setDuration(duration)
-			.output(outputPath)
-			.on("start", function (commandLine) {
-				console.log("Spawned Ffmpeg with command: " + commandLine);
-			})
-			.on("end", function () {
-				console.log("Processing finished !");
-				fs.unlink(videoName, (err) => {}); // Delete the downloaded video
-			})
-			.run();
-	});
+	const url = info.formats[0].url;
 
-	res.send("Video processed successfully");
+	// Download the part of the video from the stream URL
+	ffmpeg({ source: url })
+		.setStartTime(startTimeInSeconds)
+		.setDuration(duration)
+		.output(videoName)
+		.on("start", function (commandLine) {
+			console.log("Spawned Ffmpeg with command: " + commandLine);
+		})
+		.on("end", function () {
+			console.log("Processing finished !");
+		})
+		.run();
+
+		res.send("Video processed successfully");
 });
 
 // server listening to lofi port 3001 🎶
